@@ -1,13 +1,13 @@
 <?php
 
-namespace common\fixtures;
+namespace tests\unit\fixtures;
 
-use yii\test\BaseActiveFixture;
+use yii\test\ActiveFixture;
 
 /**
  * Author fixture
  */
-class AuthorFixture extends BaseActiveFixture
+class AuthorFixture extends ActiveFixture
 {
     /**
      * @inheritdoc
@@ -17,5 +17,5 @@ class AuthorFixture extends BaseActiveFixture
     /**
      * @inheritdoc
      */
-    public $dataFile = '@common/fixtures/data/Author.php';
+    public $dataFile = '@tests/unit/fixtures/data/Author.php';
 }
