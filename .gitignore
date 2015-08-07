@@ -59,3 +59,6 @@ themes/classic/views/
 
 ### Vendor folder
 vendor/*
+
+### yii console command
+/yii
