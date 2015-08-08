@@ -10,8 +10,8 @@ class m150807_111927_books extends Migration
         $this->createTable('books', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
-            'date_create' => $this->timestamp()->notNull()->defaultValue(0),
-            'date_update' => $this->timestamp()->notNull()->defaultValue(0),
+            'date_create' => $this->integer()->notNull()->defaultValue(0),
+            'date_update' => $this->integer()->notNull()->defaultValue(0),
             'preview' => $this->string()->notNull()->defaultValue(''),
             'date' => $this->date()->notNull(),
             'author_id' => $this->integer(),

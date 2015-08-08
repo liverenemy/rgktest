@@ -1,0 +1,20 @@
+<?php
+return [
+    'Action Buttons' => 'Кнопки действий',
+    'Are you sure you want to delete this item?' => 'Вы уверены, что желаете удалить эту запись?',
+    'Author' => 'Автор',
+    'Book Publish Date' => 'Дата выхода книги',
+    'Create' => 'Создать',
+    'Create Book' => 'Создать книгу',
+    'Created at' => 'Дата добавления',
+    'Delete' => 'Удалить',
+    'Books' => 'Книги',
+    'Login' => 'Вход',
+    'Name' => 'Название',
+    'Preview' => 'Превью',
+    'Search' => 'Искать',
+    'Signup' => 'Регистрация',
+    'Updated at' => 'Дата обновления',
+    'Update' => 'Редактировать',
+    '[view]' => '[просм]',
+];

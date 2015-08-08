@@ -16,6 +16,7 @@ class Author extends BaseModel
 {
     /**
      * @inheritdoc
+     * @property Book
      */
     public static function tableName()
     {
@@ -51,5 +52,13 @@ class Author extends BaseModel
     public static function find()
     {
         return new AuthorQuery(get_called_class());
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBooks()
+    {
+        return $this->hasMany(Book::className(), ['author_id' => 'id']);
     }
 }

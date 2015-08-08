@@ -1,12 +1,16 @@
 <?php
 
 use yii\helpers\Html;
+use yii\grid\DataColumn;
 use yii\grid\GridView;
+use common\models\Book;
+use frontend\assets\ColorBoxAsset;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\BookSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+ColorBoxAsset::register($this);
 $this->title = Yii::t('app', 'Books');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -23,13 +27,68 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+//            ['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'name',
-            'date_create',
-            'date_update',
-            'preview',
+            [
+                'class' => DataColumn::className(),
+                'attribute' => 'date_create',
+                'value' => function(Book $model) {
+                    $dt = new \DateTime();
+                    $dt->setTimestamp($model->date_create);
+                    return \Yii::$app->formatter->asDate($dt);
+                }
+            ],
+            [
+                'class' => DataColumn::className(),
+                'attribute' => 'date_update',
+                'value' => function(Book $model) {
+                    $dt = new \DateTime();
+                    $dt->setTimestamp($model->date_update);
+                    return \Yii::$app->formatter->asDate($dt);
+                }
+            ],
+            [
+                'class' => DataColumn::className(),
+                'attribute' => 'preview',
+                'content' => function(Book $model) {
+                    return Html::a(
+                        Html::img($model->preview, [
+                            'height' => 60,
+                            'style' => 'cursor: pointer; cursor: hand;',
+                        ]),
+                        [
+                            $model->preview
+                        ],
+                        [
+                            'class' => 'preview',
+                            'title' => $model->name,
+                        ]
+                    );
+                },
+            ],
+            [
+                'class' => DataColumn::className(),
+                'content' => function(Book $model) {
+                    return Html::a(
+                        Yii::t('app', '[view]'),
+                        [
+                            'view',
+                            'id' => $model->id,
+                        ],
+                        [
+                            'class' => 'ajax-view',
+                            'data' => [
+                                'key' => $model->id,
+                            ],
+                            'title' => $model->name,
+                        ]
+                    );
+                },
+                'label' => Yii::t('app', 'Action Buttons'),
+            ],
+//            'preview',
             // 'date',
             // 'author_id',
 
@@ -38,3 +97,16 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
 
 </div>
+<?
+$this->registerJs(new \yii\web\JsExpression(<<<JS
+jQuery('a.preview').colorbox({
+    rel: 'previewGallery'
+});
+jQuery('a.ajax-view').each(function(){
+    var id = jQuery(this).data('key');
+    jQuery(this).colorbox({
+
+    });
+});
+JS
+));

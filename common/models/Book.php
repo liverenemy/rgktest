@@ -4,6 +4,8 @@ namespace common\models;
 
 use Yii;
 use common\models\query\BookQuery;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "books".
@@ -20,6 +22,22 @@ use common\models\query\BookQuery;
  */
 class Book extends BaseModel
 {
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return array_merge(parent::behaviors(), [
+            [
+                'class' => TimestampBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['date_create', 'date_update'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['date_update'],
+                ],
+            ],
+        ]);
+    }
+
     /**
      * @inheritdoc
      */
@@ -52,7 +70,7 @@ class Book extends BaseModel
             'date_create' => Yii::t('app', 'Created at'),
             'date_update' => Yii::t('app', 'Updated at'),
             'preview' => Yii::t('app', 'Preview'),
-            'date' => Yii::t('app', 'Publish Date'),
+            'date' => Yii::t('app', 'Book Publish Date'),
             'author_id' => Yii::t('app', 'Author'),
         ];
     }

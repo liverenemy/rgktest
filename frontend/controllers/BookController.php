@@ -48,8 +48,15 @@ class BookController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        if (\Yii::$app->request->isAjax) {
+            return $this->renderAjax('view', [
+                'noButtons' => true,
+                'model' => $model,
+            ]);
+        }
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 
