@@ -12,18 +12,6 @@ use yii\web\AssetBundle;
 class ColorBoxAsset extends AssetBundle
 {
     /**
-     * Language map
-     *
-     * File name suffixes for the different languages
-     *
-     * @var array
-     */
-    protected $_languageMap = [
-        'ru-RU' => 'ru',
-        'fr-FR' => 'fr',
-    ];
-
-    /**
      * @inheritdoc
      */
     public $css = [
@@ -60,10 +48,10 @@ class ColorBoxAsset extends AssetBundle
     protected function appendLanguageFiles()
     {
         $language = \Yii::$app->language;
+        $sourceLanguage = \Yii::$app->sourceLanguage;
 
-        if (!empty($this->_languageMap[$language])) {
-            $fileNamePart = $this->_languageMap[$language];
-            $this->js[] = "i18n/jquery.colorbox-$fileNamePart.js";
+        if ($language != $sourceLanguage) {
+            $this->js[] = "i18n/jquery.colorbox-$language.js";
         }
     }
 

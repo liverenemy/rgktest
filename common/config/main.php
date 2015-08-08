@@ -23,5 +23,5 @@ return [
             'showScriptName' => false,
         ],
     ],
-    'language' => 'ru-RU',
+    'language' => 'ru',
 ];
