@@ -6,8 +6,6 @@ use yii\web\AssetBundle;
 /**
  * Book asset
  *
- *
- *
  * @author Sergey Cherdantsev <cherdancev@yandex.ru>
  */
 

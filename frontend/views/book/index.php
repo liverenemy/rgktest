@@ -4,12 +4,14 @@ use yii\helpers\Html;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use common\models\Book;
+use frontend\assets\BookAsset;
 use frontend\assets\ColorBoxAsset;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\BookSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
+BookAsset::register($this);
 ColorBoxAsset::register($this);
 $this->title = Yii::t('app', 'Books');
 $this->params['breadcrumbs'][] = $this->title;
@@ -34,19 +36,33 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => DataColumn::className(),
                 'attribute' => 'date_create',
-                'value' => function(Book $model) {
+                'content' => function(Book $model) {
                     $dt = new \DateTime();
                     $dt->setTimestamp($model->date_create);
-                    return \Yii::$app->formatter->asDate($dt);
+                    return Html::tag(
+                        'span',
+                        \Yii::$app->formatter->asRelativeTime($model->date_create),
+                        [
+                            'class' => 'dotted',
+                            'title' => \Yii::$app->formatter->asDatetime($dt),
+                        ]
+                    );
                 }
             ],
             [
                 'class' => DataColumn::className(),
                 'attribute' => 'date_update',
-                'value' => function(Book $model) {
+                'content' => function(Book $model) {
                     $dt = new \DateTime();
                     $dt->setTimestamp($model->date_update);
-                    return \Yii::$app->formatter->asDate($dt);
+                    return Html::tag(
+                        'span',
+                        \Yii::$app->formatter->asRelativeTime($model->date_update),
+                        [
+                            'class' => 'dotted',
+                            'title' => \Yii::$app->formatter->asDatetime($dt),
+                        ]
+                    );
                 }
             ],
             [
@@ -55,8 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'content' => function(Book $model) {
                     return Html::a(
                         Html::img($model->preview, [
-                            'height' => 60,
-                            'style' => 'cursor: pointer; cursor: hand;',
+                            'class' => 'table-img',
                         ]),
                         [
                             $model->preview
