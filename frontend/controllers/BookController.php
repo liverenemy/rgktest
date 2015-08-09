@@ -113,8 +113,11 @@ class BookController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $url = Url::previous('book/index');
+        if (empty($url)) {
+            $url = ['index'];
+        }
+        return $this->redirect($url);
     }
 
     /**
