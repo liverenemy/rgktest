@@ -41,6 +41,16 @@ class ResetPasswordForm extends Model
     /**
      * @inheritdoc
      */
+    public function attributeLabels()
+    {
+        return [
+            'password' => Yii::t('app', 'Password'),
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return [

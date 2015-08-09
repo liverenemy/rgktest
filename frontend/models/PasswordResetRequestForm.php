@@ -1,6 +1,7 @@
 <?php
 namespace frontend\models;
 
+use Yii;
 use common\models\User;
 use yii\base\Model;
 
@@ -10,6 +11,16 @@ use yii\base\Model;
 class PasswordResetRequestForm extends Model
 {
     public $email;
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            'email' => Yii::t('app', 'Email'),
+        ];
+    }
 
     /**
      * @inheritdoc

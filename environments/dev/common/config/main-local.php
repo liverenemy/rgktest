@@ -1,6 +1,9 @@
 <?php
 return [
     'components' => [
+        'assetManager' => [
+            'forceCopy' => true,
+        ],
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=localhost;dbname=rgktest',

@@ -11,12 +11,14 @@ use common\models\query\AuthorQuery;
  * @property integer $id
  * @property string $firstname
  * @property string $lastname
+ *
+ * @property string $name
+ * @property Book[] $books
  */
 class Author extends BaseModel
 {
     /**
      * @inheritdoc
-     * @property Book
      */
     public static function tableName()
     {
@@ -60,5 +62,15 @@ class Author extends BaseModel
     public function getBooks()
     {
         return $this->hasMany(Book::className(), ['author_id' => 'id']);
+    }
+
+    /**
+     * Get author's full name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->firstname . ' ' . $this->lastname;
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use common\grid\ActionColumn;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use common\models\Book;
@@ -17,54 +18,18 @@ $this->title = Yii::t('app', 'Books');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="book-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <p>
+    <p class="pull-right">
         <?= Html::a(Yii::t('app', 'Create Book'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
+    <h1><?= Html::encode($this->title) ?></h1>
+    <?= $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+//        'filterModel' => $searchModel,
         'columns' => [
-//            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'name',
-            [
-                'class' => DataColumn::className(),
-                'attribute' => 'date_create',
-                'content' => function(Book $model) {
-                    $dt = new \DateTime();
-                    $dt->setTimestamp($model->date_create);
-                    return Html::tag(
-                        'span',
-                        \Yii::$app->formatter->asRelativeTime($model->date_create),
-                        [
-                            'class' => 'dotted',
-                            'title' => \Yii::$app->formatter->asDatetime($dt),
-                        ]
-                    );
-                }
-            ],
-            [
-                'class' => DataColumn::className(),
-                'attribute' => 'date_update',
-                'content' => function(Book $model) {
-                    $dt = new \DateTime();
-                    $dt->setTimestamp($model->date_update);
-                    return Html::tag(
-                        'span',
-                        \Yii::$app->formatter->asRelativeTime($model->date_update),
-                        [
-                            'class' => 'dotted',
-                            'title' => \Yii::$app->formatter->asDatetime($dt),
-                        ]
-                    );
-                }
-            ],
             [
                 'class' => DataColumn::className(),
                 'attribute' => 'preview',
@@ -85,29 +50,92 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => DataColumn::className(),
+                'attribute' => 'author_id',
+                'label' => Yii::t('app', 'Author'),
                 'content' => function(Book $model) {
-                    return Html::a(
-                        Yii::t('app', '[view]'),
-                        [
-                            'view',
-                            'id' => $model->id,
-                        ],
-                        [
-                            'class' => 'ajax-view',
-                            'data' => [
-                                'key' => $model->id,
-                            ],
-                            'title' => $model->name,
-                        ]
-                    );
+                    $author = $model->author;
+                    if (empty($author)) {
+                        return '';
+                    }
+                    return $author->name;
                 },
-                'label' => Yii::t('app', 'Action Buttons'),
             ],
-//            'preview',
-            // 'date',
-            // 'author_id',
+            [
+                'class' => DataColumn::className(),
+                'attribute' => 'date',
+                'content' => function(Book $model) {
+                    if (empty($model->date)) {
+                        return '';
+                    }
+                    return \Yii::$app->formatter->asDate($model->date);
+                }
+            ],
+            [
+                'class' => DataColumn::className(),
+                'attribute' => 'date_create',
+                'content' => function(Book $model) {
+                    return $this->render('blocks/relativeTime', [
+                        'timestamp' => $model->date_create,
+                    ]);
+                }
+            ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => ActionColumn::className(),
+                'buttons' => [
+                    'update' => function($url, Book $model, $key) {
+                        return Html::a(
+                            Yii::t('app', '[update]'),
+                            $url
+                        );
+                    },
+                ],
+                'header' => Yii::t('app', 'Action Buttons'),
+                'headerOptions' => [
+                    'colspan' => 3,
+                ],
+                'template' => '{update}',
+            ],
+
+            [
+                'class' => ActionColumn::className(),
+                'buttons' => [
+                    'view' => function($url, Book $model, $key) {
+                        return Html::a(
+                            Yii::t('app', '[view]'),
+                            $url,
+                            [
+                                'class' => 'ajax-view',
+                                'data' => [
+                                    'key' => $model->id,
+                                ],
+                                'title' => $model->name,
+                            ]
+                        );
+                    },
+                ],
+                'showHeader' => false,
+                'template' => '{view}',
+            ],
+
+            [
+                'class' => ActionColumn::className(),
+                'buttons' => [
+                    'delete' => function($url, Book $model, $key) {
+                        return Html::a(
+                            Yii::t('app', '[delete]'),
+                            $url,
+                            [
+                                'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                'data-method' => 'post',
+                                'data-pjax' => '0',
+                            ]
+                        );
+                    },
+                ],
+                'showHeader' => false,
+                'template' => '{delete}',
+            ],
         ],
     ]); ?>
 
@@ -118,10 +146,7 @@ jQuery('a.preview').colorbox({
     rel: 'previewGallery'
 });
 jQuery('a.ajax-view').each(function(){
-    var id = jQuery(this).data('key');
-    jQuery(this).colorbox({
-
-    });
+    jQuery(this).colorbox({});
 });
 JS
 ));
