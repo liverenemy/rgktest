@@ -7,6 +7,7 @@ use yii\grid\GridView;
 use common\models\Book;
 use frontend\assets\BookAsset;
 use frontend\assets\ColorBoxAsset;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\BookSearch */
@@ -22,11 +23,18 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app', 'Create Book'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
     <h1><?= Html::encode($this->title) ?></h1>
-    <?= $this->render('_search', ['model' => $searchModel]); ?>
 
+    <? $pjax = Pjax::begin([
+        'id' => 'book-pjax-list',
+        'scrollTo' => 1,
+        'timeout' => 5000,
+    ]) ?>
+    <?= $this->render('_search', [
+        'model' => $searchModel,
+        'pjax' => true,
+    ]); ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-//        'filterModel' => $searchModel,
         'columns' => [
             'id',
             'name',
@@ -60,33 +68,29 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $author->name;
                 },
             ],
-            [
-                'class' => DataColumn::className(),
-                'attribute' => 'date',
-                'content' => function(Book $model) {
-                    if (empty($model->date)) {
-                        return '';
-                    }
-                    return \Yii::$app->formatter->asDate($model->date);
-                }
-            ],
-            [
-                'class' => DataColumn::className(),
-                'attribute' => 'date_create',
-                'content' => function(Book $model) {
-                    return $this->render('blocks/relativeTime', [
-                        'timestamp' => $model->date_create,
-                    ]);
-                }
-            ],
+            'date:date',
+            'date_create:relativeTime',
+//            [
+//                'class' => DataColumn::className(),
+//                'attribute' => 'date_create',
+//                'content' => function(Book $model) {
+//                    return $this->render('blocks/relativeTime', [
+//                        'timestamp' => $model->date_create,
+//                    ]);
+//                }
+//            ],
 
             [
                 'class' => ActionColumn::className(),
                 'buttons' => [
-                    'update' => function($url, Book $model, $key) {
+                    'update' => function($url) {
                         return Html::a(
                             Yii::t('app', '[update]'),
-                            $url
+                            $url,
+                            [
+                                'data-pjax' => '0',
+                                'target' => '_blank',
+                            ]
                         );
                     },
                 ],
@@ -100,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::className(),
                 'buttons' => [
-                    'view' => function($url, Book $model, $key) {
+                    'view' => function($url, Book $model) {
                         return Html::a(
                             Yii::t('app', '[view]'),
                             $url,
@@ -108,6 +112,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'class' => 'ajax-view',
                                 'data' => [
                                     'key' => $model->id,
+                                    'pjax' => '0',
                                 ],
                                 'title' => $model->name,
                             ]
@@ -121,7 +126,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::className(),
                 'buttons' => [
-                    'delete' => function($url, Book $model, $key) {
+                    'delete' => function($url) {
                         return Html::a(
                             Yii::t('app', '[delete]'),
                             $url,
@@ -138,15 +143,15 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-
-</div>
-<?
-$this->registerJs(new \yii\web\JsExpression(<<<JS
-jQuery('a.preview').colorbox({
-    rel: 'previewGallery'
-});
-jQuery('a.ajax-view').each(function(){
-    jQuery(this).colorbox({});
-});
+    <?
+    $this->registerJs(new \yii\web\JsExpression(<<<JS
+    jQuery('a.preview').colorbox({
+        rel: 'previewGallery'
+    });
+    jQuery('a.ajax-view').each(function(){
+        jQuery(this).colorbox({});
+    });
 JS
-));
+    ));?>
+    <? $pjax->end() ?>
+</div>

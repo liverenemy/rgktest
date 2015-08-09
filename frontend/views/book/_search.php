@@ -9,6 +9,7 @@ use frontend\assets\BookAsset;
 /* @var $this yii\web\View */
 /* @var $model common\models\BookSearch */
 /* @var $form yii\widgets\ActiveForm */
+/* @var $pjax boolean */
 
 BookAsset::register($this);
 ?>
@@ -19,6 +20,7 @@ BookAsset::register($this);
         'method' => 'get',
         'options' => [
             'class' => 'form-inline',
+            'data-pjax' => !empty($pjax),
         ],
     ]); ?>
     <div class="row">

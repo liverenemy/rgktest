@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use common\behaviors\DateCorrectBehavior;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -41,12 +42,18 @@ class BookSearch extends Book
     /**
      * @inheritdoc
      */
-    public function load($data, $formName = null)
+    public function behaviors()
     {
-        $result = parent::load($data, $formName);
-        $this->dateMax = $this->_normalizeDate($this->dateMax);
-        $this->dateMin = $this->_normalizeDate($this->dateMin);
-        return $result;
+        return [
+            [
+                'class' => DateCorrectBehavior::className(),
+                DateCorrectBehavior::FIELDS => [
+                    'date',
+                    'dateMax',
+                    'dateMin',
+                ]
+            ]
+        ];
     }
 
     /**
@@ -56,7 +63,7 @@ class BookSearch extends Book
     {
         return [
             [['id', 'author_id'], 'integer'],
-            [['name', 'date_create', 'date_update', 'preview', 'date', 'dateMin', 'dateMax',], 'safe'],
+            [['name', 'date_create', 'date_update', 'preview', 'date', 'dateMin', 'dateMax',], 'string'],
         ];
     }
 
@@ -133,20 +140,5 @@ class BookSearch extends Book
         $query->andFilterWhere(['ilike', 'name', $this->name]);
 
         return $dataProvider;
-    }
-
-    /**
-     * Transform a date from 'd/m/Y' to 'Y-m-d' format
-     *
-     * @param string $date Date in 'd/m/Y' format
-     * @return string
-     */
-    protected function _normalizeDate($date)
-    {
-        $parts = explode('/', $date);
-        if (empty($parts) || !is_array($parts) || 3 != count($parts)) {
-            return $date;
-        }
-        return $parts[2] . '-' . $parts[1] . '-' . $parts[0];
     }
 }

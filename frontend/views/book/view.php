@@ -1,10 +1,11 @@
 <?php
 
+use common\models\Book;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Book */
+/* @var $model Book */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Books'), 'url' => ['index']];
@@ -32,11 +33,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'name',
-            'date_create',
-            'date_update',
-            'preview',
-            'date',
-            'author_id',
+            'date_create:dateTime',
+            'date_update:dateTime',
+            'preview:image',
+            'date:date',
+            [
+                'label' => $model->getAttributeLabel('author_id'),
+                'value' => $model->author,
+            ],
         ],
     ]) ?>
 

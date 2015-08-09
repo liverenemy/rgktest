@@ -2,10 +2,12 @@
 
 namespace common\models;
 
+use common\behaviors\DateCorrectBehavior;
 use Yii;
 use common\models\query\BookQuery;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use common\web\UploadedFile;
 
 /**
  * This is the model class for table "books".
@@ -23,6 +25,13 @@ use yii\db\ActiveRecord;
 class Book extends BaseModel
 {
     /**
+     * New preview file
+     *
+     * @var UploadedFile
+     */
+    public $previewFile;
+
+    /**
      * @inheritdoc
      */
     public function behaviors()
@@ -35,6 +44,10 @@ class Book extends BaseModel
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['date_update'],
                 ],
             ],
+            [
+                'class' => DateCorrectBehavior::className(),
+                DateCorrectBehavior::FIELDS => ['date'],
+            ]
         ]);
     }
 
@@ -55,7 +68,22 @@ class Book extends BaseModel
             [['name', 'date'], 'required'],
             [['date_create', 'date_update', 'date'], 'safe'],
             [['author_id'], 'integer'],
-            [['name', 'preview'], 'string', 'max' => 255]
+            [['name', 'preview'], 'string', 'max' => 255],
+            [
+                [
+                    'previewFile',
+                ],
+                'image',
+                'extensions' => [
+                    'jpg',
+                    'jpeg',
+                    'png',
+                ],
+                'maxHeight' => 1000,
+                'maxWidth' => 1000,
+                'minHeight' => 100,
+                'minWidth' => 100,
+            ],
         ];
     }
 
@@ -70,6 +98,7 @@ class Book extends BaseModel
             'date_create' => Yii::t('app', 'Created at'),
             'date_update' => Yii::t('app', 'Updated at'),
             'preview' => Yii::t('app', 'Preview'),
+            'previewFile' => Yii::t('app', 'Preview'),
             'date' => Yii::t('app', 'Book Publish Date'),
             'author_id' => Yii::t('app', 'Author'),
         ];
@@ -90,5 +119,29 @@ class Book extends BaseModel
     public static function find()
     {
         return new BookQuery(get_called_class());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function load($data, $formName = null)
+    {
+        $result = parent::load($data, $formName);
+        $this->previewFile = UploadedFile::getInstance($this, 'previewFile');
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        if (!empty($this->previewFile)) {
+            $url = $this->previewFile->saveAsImage(false);
+            if (!empty($url)) {
+                $this->preview = $url;
+            }
+        }
+        return parent::save($runValidation, $attributeNames);
     }
 }

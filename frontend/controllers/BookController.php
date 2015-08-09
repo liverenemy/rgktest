@@ -2,9 +2,11 @@
 
 namespace frontend\controllers;
 
+use common\web\UploadedFile;
 use Yii;
 use common\models\Book;
 use common\models\BookSearch;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -32,6 +34,7 @@ class BookController extends Controller
      */
     public function actionIndex()
     {
+        Url::remember(Url::current(), 'book/index');
         $searchModel = new BookSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -88,8 +91,12 @@ class BookController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->save()) {
+            $url = Url::previous('book/index');
+            if (empty($url)) {
+                $url = ['view', 'id' => $model->id];
+            }
+            return $this->redirect($url);
         } else {
             return $this->render('update', [
                 'model' => $model,
