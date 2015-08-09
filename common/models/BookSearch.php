@@ -79,10 +79,29 @@ class BookSearch extends Book
     public function search($params)
     {
         $query = Book::find()
-            ->with('author');
+            ->joinWith('author');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'attributes' => [
+                    'id',
+                    'name',
+                    'author_id' => [
+                        'asc' => [
+                            'authors.firstName' => SORT_ASC,
+                            'authors.lastName' => SORT_ASC,
+                        ],
+                        'desc' => [
+                            'authors.firstName' => SORT_DESC,
+                            'authors.lastName' => SORT_ASC,
+                        ],
+                        'default' => SORT_ASC,
+                    ],
+                    'date',
+                    'date_create',
+                ],
+            ],
         ]);
 
         $this->load($params);
@@ -108,15 +127,10 @@ class BookSearch extends Book
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'date_create' => $this->date_create,
-            'date_update' => $this->date_update,
-            'date' => $this->date,
             'author_id' => $this->author_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'preview', $this->preview]);
+        $query->andFilterWhere(['ilike', 'name', $this->name]);
 
         return $dataProvider;
     }

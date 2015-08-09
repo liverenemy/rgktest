@@ -23,6 +23,7 @@ return [
     'Author' => 'Автор',
     'Book Publish Date' => 'Дата выхода книги',
     'Books' => 'Книги',
+    'Books (test task)' => 'Книги (тестовое задание)',
     'Contact' => 'Контакты',
     'Create' => 'Создать',
     'Create Book' => 'Создать книгу',
@@ -41,8 +42,7 @@ return [
     'Please choose your new password:' => 'Придумайте новый пароль:',
     'Please fill out the following fields to login:' => 'Для входа на сайт заполните следующие поля:',
     'Please fill out the following fields to signup:' => 'Для регистрации на сайте заполните следующие поля:',
-    'Please fill out your email. A link to reset password will be sent there.' => 'Укажите ваш email.'
-        . 'На этот адрес придет ссылка для восстановления пароля.',
+    'Please fill out your email. A link to reset password will be sent there.' => 'Укажите ваш email.На этот адрес придет ссылка для восстановления пароля.',
     'Preview' => 'Превью',
     'Remember Me' => 'Запомнить меня',
     'Request password reset' => 'Запрос на восстановление пароля',
