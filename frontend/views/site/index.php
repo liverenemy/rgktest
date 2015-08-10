@@ -19,7 +19,7 @@ $this->title = 'My Yii Application';
                target="_blank">
                 Резюме соискателя
             </a>
-            <a class="btn btn-primary" href="/upload/CherdantsevSergey.pdf">
+            <a class="btn btn-primary" href="/upload/CherdantsevSergey.pdf" target="_blank">
                 <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
                 .pdf
             </a>
